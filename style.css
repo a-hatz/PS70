@@ -22,6 +22,14 @@ img.one {
 
 img.two {
   width: 300px;
+  height: auto;
+  margin: auto;
+  align-items: center;
+}
+
+img.three {
+  height: 300px;
+  width: auto;
   margin: auto;
   align-items: center;
 }
