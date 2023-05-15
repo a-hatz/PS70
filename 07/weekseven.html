@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<title>PS70: Intro to Digital Fabrication </title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../style.css" rel="stylesheet">
+
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <div style="align-items: center; justify-content:center;" class="container-fluid">
+    <h3 class="nav-title"> PS70: Intro to Digital Fabrication</h3>
+    <div class="navbar-nav">
+      <h4><a class="nav-link" href="../index.html">Home</a></h4>
+      <h4><a class="nav-link" href="../about.html">About</a></h4>
+      <h4><a class="nav-link" href="../journal.html">Journal</a></h4>
+    </div>
+  </div>
+</nav>
+
+<body>
+
+
+
+<xmp style="display:none;">
+
+### Output
+
+## Concept & Inspirations
+
+Continuing with the distance sensors from the previous week, I decided to create a light indicator of proximity. However, instead of having a simple on/off led with a threshold, I thought it might be interesting to have the light actually indicate how close the object was, either by brightness or by number of lights.
+
+## Design Process
+
+I largely adpated from my code from microcontroller week, though I changed the output from the aforementioned threshold control to a more variable one. 
+
+<pre><code>
+  const int trigPin = 9;
+  const int echoPin = 10;
+  const int ledPin = 6;
+  const int maxDistance = 200; // Maximum distance to measure in centimeters
+  const int minBrightness = 50; // Minimum brightness level for the LED
+  const int maxBrightness = 255; // Maximum brightness level for the LED
+
+  void setup() {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+    Serial.begin(9600);
+  }
+
+  void loop() {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    long duration = pulseIn(echoPin, HIGH);
+    int distance = duration / 58.2; // Calculate distance in centimeters
+
+    if (distance > maxDistance) {
+      analogWrite(ledPin, 0); // Turn off the LED if the object is too far away
+    } else {
+      // Map the distance to a brightness level for the LED
+      int brightness = map(distance, 0, maxDistance, minBrightness, maxBrightness);
+      analogWrite(ledPin, brightness);
+    }
+
+    Serial.println(distance); // Output distance to serial monitor for debugging
+  }
+</code></pre> 
+
+<video width="320" height="240" controls>
+</video>
+
+</xmp>
+</body>
+
+<script src="../strapdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
+
+</html>
