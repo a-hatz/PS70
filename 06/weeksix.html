@@ -18,60 +18,53 @@
 
 <body>
 
-
-
 <xmp style="display:none;">
 
 ### Inputs
 
 ## Concept & Inspirations
 
-For my microcontroller week, I used a distance sensor to control a kinetic sculpture representation of Daphne from the myth of Daphne and Apollo. 
+For my microcontroller week, I used a distance sensor to control a kinetic sculpture representation of Daphne from the myth of Daphne and Apollo. As the distance sensor is a fairly useful sensor, I decided to calibrate it for this week's assignment.
 
 ## Design Process
 
-<pre><code>
-long duration, distance;
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(60);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  distance = (duration / 2) / 29.1;
-</code></pre> 
-
-
-
-<pre><code>
-if (distance < distanceThreshold) {
-    digitalWrite(A1A, LOW);
-    digitalWrite(A1B, HIGH);
-  } else {
-    digitalWrite(A1A, HIGH);
-    digitalWrite(A1B, LOW);
-  }
-</code></pre> 
-
-Circuit wiring:
+As with the microcontroller project, I wired my distance sensor to the ESP32 as shown: 
 
 <img class="three" src="./circuitsketch.PNG">
 
-##Final Result & Notes
+<img class="three" src="./setupsketch.jpeg">
 
-The trunk "opens" when one moves away from the distance sensor:
+I used the following code to record the readings from the distance sensor at different distances as measured by the ruler:
 
-<video width="320" height="240" controls>
-  <source src="distancetree.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
+<pre><code>
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
 
-<video width="320" height="240" controls>
-  <source src="distancetree2.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
+  pinMode(echoPin, INPUT);
+  duration = pulseIn(echoPin, HIGH);
+  Serial.println(duration);
+</code></pre> 
 
-The main issue I would/will resolve is the friction between the motor attachment and the base; it makes it a little too difficult to get the trunk to "close," and it would be easily fixed if I adjusted my dimensions very slightly and reprinted. Otherwise, I'm very happy with the final result.
+Using these, I entered my data into a spreadsheet and used it to calibrate the sensor. The distance in inches should be the duration reading divided by the slope of the line, shown on the graph.
+
+<img class="three" src="./data.png">
+*this says centimeters, but it should be inches. I use centimeters for the capacitive sensor portion.
+
+
+I decided to try a different type of distance sensor for the second part of this assignment: a capacitive distance sensor. I connected the aluminum of my capacitor through a 10k ohm resistor to an input pin on the ESP32. I used the same setup as before to graph my readings against actual distance, though this time they were averaged over 200 readings for a bit more precision.
+
+<pre><code>
+  const int numMeasurements = 100;
+  for (int i = 0; i < numMeasurements; i++) { // get the average of 100 readings to smooth out the data
+     sensorValue += Sensor.capacitiveSensor(1000);
+     delay(10);
+  }
+</code></pre> 
+
+The graph in this case looked a little different:
+<img class="three" src="./data2.png">
 
 </xmp>
 </body>
